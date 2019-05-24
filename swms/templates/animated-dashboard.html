@@ -1,0 +1,92 @@
+{% extends "master_layout.html" %}
+
+{% block content %}
+
+<!-- Animated -->
+        <div class="animated fadeIn">
+            <!-- Widgets  -->
+            <div class="row">
+
+                 <div class="col-lg-3 col-md-6">
+                    <div class="card text-white bg-flat-color-2">
+                        <div class="card-body">
+                            <div class="card-left pt-1 float-left">
+                                <h3 class="mb-0 fw-r">
+                                    <span class="count">{{ total_count }}</span>
+                                </h3>
+                                <p class="text-light mt-1 m-0">Total Users</p>
+                            </div><!-- /.card-left -->
+
+                            <div class="card-right float-right text-right">
+                                <i class="fa fa-5x fa-users"></i>
+                            </div><!-- /.card-right -->
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white bg-flat-color-2">
+                        <div class="card-body">
+                            <div class="card-left pt-1 float-left">
+                                <h3 class="mb-0 fw-r">
+                                    <span class="count">{{ admin_count }}</span>
+                                </h3>
+                                <p class="text-light mt-1 m-0">Total Admin</p>
+                            </div><!-- /.card-left -->
+
+                            <div class="card-right float-right text-right">
+                                <i class="fa fa-5x fa-users"></i>
+                            </div><!-- /.card-right -->
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white bg-flat-color-3">
+                        <div class="card-body">
+                            <div class="card-left pt-1 float-left">
+                                <h3 class="mb-0 fw-r">
+                                    <span class="count">{{ user_count }}</span>
+                                </h3>
+                                <p class="text-light mt-1 m-0">Total Workers</p>
+                            </div><!-- /.card-left -->
+
+                            <div class="card-right float-right text-right">
+                                <i class="fa fa-5x fa-users"></i>
+                            </div><!-- /.card-right -->
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white bg-flat-color-1">
+                        <div class="card-body">
+                            <div class="card-left pt-1 float-left">
+                                <h3 class="mb-0 fw-r">
+                                    <span class="count">1</span>
+                                </h3>
+                                <p class="text-light mt-1 m-0">Total Dustbins</p>
+                            </div><!-- /.card-left -->
+
+                            <div class="card-right float-right text-right">
+                                <i class="fa fa-5x fa-bitbucket"></i>
+                            </div><!-- /.card-right -->
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.widget -->
+
+            <div class="clearfix"></div>
+
+        </div>
+{% endblock content %}
