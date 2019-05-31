@@ -27,11 +27,12 @@ class User(db.Model,UserMixin):
 class Dustbin(db.Model):
     __tablename__ = 'dustbin'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20), nullable=False)
+    dustbin_name = db.Column(db.String(20), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
-    content = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    location = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Post('{self.title}','{self.date_posted}')"
+        return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location},{self.user_id})"

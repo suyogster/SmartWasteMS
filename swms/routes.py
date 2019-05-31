@@ -6,8 +6,8 @@ import sys
 from swms import app, db, bcrypt
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from .forms import RegistrationForm, LoginForm, UpdateAccountForm
-from swms.models import User
+from .forms import RegistrationForm, LoginForm, UpdateAccountForm, CreateDustbinForm
+from swms.models import User,Dustbin
 
 
 @app.route('/')
@@ -17,7 +17,8 @@ def home():
     total_count = User.query.count()
     admin_count = User.query.filter_by(role='admin').count()
     user_count = User.query.filter_by(role='user').count()
-    return render_template('animated-dashboard.html',title="Dashboard", total_count=total_count, user_count=user_count, admin_count=admin_count)
+    return render_template('animated-dashboard.html', title="Dashboard", total_count=total_count, user_count=user_count,
+                           admin_count=admin_count)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -105,7 +106,7 @@ def user_list():
     return render_template('user-list.html', title='User List', users=users)
 
 
-@app.route('/editUser/<int:id>',methods=['GET','POST'])
+@app.route('/editUser/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(id):
     if current_user.role == 'admin':
@@ -117,12 +118,13 @@ def edit_user(id):
             db.session.commit()
             flash('Your Account has been updated', 'success')
             return redirect(url_for('user_list'))
-        return render_template('edit-user.html',title='Edit User', user=user,form=form)
+        return render_template('edit-user.html', title='Edit User', user=user, form=form)
     else:
         flash('You have no right no access the page', 'danger')
         return redirect(url_for('login'))
 
-@app.route('/deleteUser/<int:id>',methods=['GET'])
+
+@app.route('/deleteUser/<int:id>', methods=['GET'])
 @login_required
 def delete_user(id):
     if current_user.role == 'admin':
@@ -140,3 +142,14 @@ def delete_user(id):
 @login_required
 def dustbin_list():
     return render_template('dustbin-list.html')
+
+
+@app.route('/dustbin', methods=['GET', 'POST'])
+@login_required
+def create_dusbtbin():
+    user_list = db.session.query()
+    if current_user.role == 'admin':
+        form = CreateDustbinForm()
+
+        if form.validate_on_submit():
+            return "hello"

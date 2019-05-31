@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, HiddenField
+from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, HiddenField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from swms.models import User
 
@@ -27,7 +27,6 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if (user):
             raise ValidationError('The email is already taken')
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -55,10 +54,10 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That email is taken.')
 
 
-class DustbinCreateForm(FlaskForm):
+class CreateDustbinForm(FlaskForm):
     dustbinName = StringField('Dustbin Name', validators=[DataRequired(), Length(min=2, max=20)])
-    ultrasonicStatus = IntegerField('Ultrasonic Status', validators=[DataRequired()])
-    gasStatus = IntegerField('Gas Status', validators=[DataRequired()])
-    location = IntegerField('Location', validators=[DataRequired()])
+    description = TextAreaField('Gas Status', validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired()])
+    user = SelectField('Assigned To', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
