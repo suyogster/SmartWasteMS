@@ -1,8 +1,10 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from flask_login import current_user
-from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, HiddenField, DateField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+
 from swms.models import User
 
 
@@ -27,6 +29,7 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if (user):
             raise ValidationError('The email is already taken')
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -56,8 +59,7 @@ class UpdateAccountForm(FlaskForm):
 
 class CreateDustbinForm(FlaskForm):
     dustbinName = StringField('Dustbin Name', validators=[DataRequired(), Length(min=2, max=20)])
-    description = TextAreaField('Gas Status', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired()])
-    user = SelectField('Assigned To', validators=[DataRequired()])
+    users_id = SelectField('Assigned To',choices=[], coerce=int)
     submit = SubmitField('Submit')
-

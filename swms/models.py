@@ -18,7 +18,7 @@ class User(db.Model,UserMixin):
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(120),nullable=False,default='user')
     created_by = db.Column(db.String(120), nullable=True, default='admin')
-    dustbins = db.relationship('Dustbin', backref='user', lazy=True)
+    dustbins = db.relationship('Dustbin', backref='worker', lazy=True)
 
     def __repr__(self):
         return f"User('{self.fullname}', '{self.email}','{self.image_file}', '{self.role}','{self.created_by}')"
@@ -32,7 +32,7 @@ class Dustbin(db.Model):
                             default=datetime.utcnow)
     description = db.Column(db.Text, nullable=False)
     location = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    users_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location},{self.user_id})"
+        return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location}','{self.user_id}')"

@@ -12,6 +12,7 @@ pinMode(trigPin, OUTPUT);
 pinMode(echoPin, INPUT);
   pinMode(Input, INPUT);
 }
+
 void loop()
 {
 long duration, distance;
@@ -36,6 +37,8 @@ Serial.print("Garbage Bin is Filled ");
 Serial.print(perc);
 Serial.println(" %."); // These 3 Lines are print, that how much the Garbage Bin is Filled...Ex. "Garbage Bin is Filled 70%.".
 }
+
+
 /*
 if (distance >= 400 || distance <= 2)
 {

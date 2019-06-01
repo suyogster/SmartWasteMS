@@ -57,7 +57,7 @@
                         <li><i class="fa fa-bitbucket"></i><a href="{{ url_for('dustbin_list') }}">DustBin list</a></li>
 
                         {% if current_user.role == 'admin' %}
-                         <li><i class="fa fa-plus"></i><a href="ui-buttons.html">Create Dustbins</a></li>
+                         <li><i class="fa fa-plus"></i><a href="{{ url_for('create_dusbtbin') }}">Create Dustbins</a></li>
                         {% endif %}
                     </ul>
                 </li>

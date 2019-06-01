@@ -2,12 +2,13 @@ import secrets
 import os
 from PIL import Image
 import sys
+import serial
 
 from swms import app, db, bcrypt
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from .forms import RegistrationForm, LoginForm, UpdateAccountForm, CreateDustbinForm
-from swms.models import User,Dustbin
+from swms.models import User, Dustbin
 
 
 @app.route('/')
@@ -17,8 +18,9 @@ def home():
     total_count = User.query.count()
     admin_count = User.query.filter_by(role='admin').count()
     user_count = User.query.filter_by(role='user').count()
+    dustbin_count = Dustbin.query.count()
     return render_template('animated-dashboard.html', title="Dashboard", total_count=total_count, user_count=user_count,
-                           admin_count=admin_count)
+                           admin_count=admin_count, dustbin_count=dustbin_count)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -141,15 +143,64 @@ def delete_user(id):
 @app.route('/dustbinList')
 @login_required
 def dustbin_list():
-    return render_template('dustbin-list.html')
+    dustbins = Dustbin.query.all()
+    return render_template('dustbin-list.html', dustbins=dustbins)
 
 
 @app.route('/dustbin', methods=['GET', 'POST'])
 @login_required
 def create_dusbtbin():
-    user_list = db.session.query()
     if current_user.role == 'admin':
         form = CreateDustbinForm()
+        form.users_id.choices = [(users_id.id, users_id.fullname) for users_id in
+                                 User.query.filter_by(role="user").all()]
 
         if form.validate_on_submit():
-            return "hello"
+            print(form.dustbinName.data)
+            dustbin = Dustbin(dustbin_name=form.dustbinName.data, description=form.description.data,
+                              location=form.location.data,
+                              users_id=form.users_id.data)
+            db.session.add(dustbin)
+            db.session.commit()
+            flash(f'Dustbin created for {form.dustbinName.data}!', 'success')
+            return redirect(url_for('home'))
+
+        return render_template('create-dustbin.html', title='Create Dustbin', form=form)
+
+
+@app.route('/dustbinStatus', methods=['GET'])
+@login_required
+def dustbin_status():
+    """Opening of the serial port"""
+    try:
+        arduino = serial.Serial("COM6", timeout=1)
+    except:
+        print('Please check the port')
+
+    """Initialising variables"""
+    rawdata = []
+    count = 0
+
+    """Receiving data and storing it in a list"""
+    while count < 3:
+        rawdata.append(str(arduino.readline()))
+        count += 1
+    print(rawdata)
+
+    def clean(L):  # L is a list
+        newl = []  # initialising the new list
+        for i in range(len(L)):
+            temp = L[i][2:]
+            newl.append(temp[:-5])
+        return newl
+
+    cleandata = clean(rawdata)
+
+    def write(L):
+        file = open("data.txt", mode='w')
+        for i in range(len(L)):
+            file.write(L[i] + '\n')
+        file.close()
+
+    write(cleandata)
+    return render_template('sensor-status.html', data=rawdata)
