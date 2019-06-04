@@ -29,6 +29,11 @@
                                     <td>{{ dustbin.location }}</td>
                                     <td>{{ dustbin.users_id }}</td>
                                     <td><a href="{{ url_for('dustbin_status') }}" class="fa fa-2x fa-eye"></a>
+                                    {% if current_user.role =='admin' %}
+                                        <a href="{{ url_for('send_email') }}" class="fa fa-2x fa-envelope"></a>
+
+                                    {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>

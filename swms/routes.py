@@ -4,9 +4,10 @@ from PIL import Image
 import sys
 import serial
 
-from swms import app, db, bcrypt
+from swms import app, db, bcrypt, mail
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from .forms import RegistrationForm, LoginForm, UpdateAccountForm, CreateDustbinForm
 from swms.models import User, Dustbin
 
@@ -171,36 +172,46 @@ def create_dusbtbin():
 @app.route('/dustbinStatus', methods=['GET'])
 @login_required
 def dustbin_status():
-    """Opening of the serial port"""
-    try:
-        arduino = serial.Serial("COM6", timeout=1)
-    except:
-        print('Please check the port')
+    # """Opening of the serial port"""
+    # try:
+    #     arduino = serial.Serial("COM6", timeout=1)
+    # except:
+    #     print('Please check the port')
+    #
+    # """Initialising variables"""
+    # rawdata = []
+    # count = 0
+    #
+    # """Receiving data and storing it in a list"""
+    # while count < 3:
+    #     rawdata.append(str(arduino.readline()))
+    #     count += 1
+    # print(rawdata)
+    #
+    # def clean(L):  # L is a list
+    #     newl = []  # initialising the new list
+    #     for i in range(len(L)):
+    #         temp = L[i][2:]
+    #         newl.append(temp[:-5])
+    #     return newl
+    #
+    # cleandata = clean(rawdata)
+    #
+    # def write(L):
+    #     file = open("data.txt", mode='w')
+    #     for i in range(len(L)):
+    #         file.write(L[i] + '\n')
+    #     file.close()
+    #
+    # write(cleandata)
+    return render_template('sensor-status.html')
 
-    """Initialising variables"""
-    rawdata = []
-    count = 0
 
-    """Receiving data and storing it in a list"""
-    while count < 3:
-        rawdata.append(str(arduino.readline()))
-        count += 1
-    print(rawdata)
-
-    def clean(L):  # L is a list
-        newl = []  # initialising the new list
-        for i in range(len(L)):
-            temp = L[i][2:]
-            newl.append(temp[:-5])
-        return newl
-
-    cleandata = clean(rawdata)
-
-    def write(L):
-        file = open("data.txt", mode='w')
-        for i in range(len(L)):
-            file.write(L[i] + '\n')
-        file.close()
-
-    write(cleandata)
-    return render_template('sensor-status.html', data=rawdata)
+@app.route('/sendEmail', methods=['GET'])
+@login_required
+def send_email():
+    msg = Message('Hello', sender='intensenotes@gmail.com', recipients=['suyog.shrestha@deerwalk.edu.np'])
+    msg.body = "Hello flask Mail Sevice"
+    mail.send(msg)
+    flash(f'Message sent!', 'success')
+    return redirect(url_for('dustbin_list'))
