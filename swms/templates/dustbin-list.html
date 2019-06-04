@@ -32,7 +32,7 @@
                                     <td>{{ dustbin.description }}</td>
                                     <td>{{ dustbin.location }}</td>
                                     <td>{{ dustbin.users_id }}</td>
-                                    <td><a href="{{ url_for('dustbin_status') }}" class="fa fa-2x fa-eye"></a>
+                                    <td><a href="/dustbinStatus/{{ dustbin.users_id }}" class="fa fa-2x fa-eye"></a>
                                     {% if current_user.role =='admin' %}
                                         <a href="/sendEmail/{{ dustbin.users_id }}" class="fa fa-2x fa-envelope"></a>
 

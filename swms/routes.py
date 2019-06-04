@@ -171,12 +171,12 @@ def create_dusbtbin():
 
 # /dev/ttyACM0
 
-@app.route('/dustbinStatus', methods=['GET'])
+@app.route('/dustbinStatus/<int:id>', methods=['GET'])
 @login_required
-def dustbin_status():
+def dustbin_status(id):
     """Opening of the serial port"""
     try:
-        arduino = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
+        arduino = serial.Serial("COM6", 9600, timeout=1)
         time.sleep(5)
 
     except:
@@ -187,28 +187,24 @@ def dustbin_status():
     count = 0
 
     """Receiving data and storing it in a list"""
-    while count <= 1:
+    while count < 1:
         rawdata.append(str(arduino.readline(), 'utf-8'))
         count += 1
 
-    def clean(L):  # L is a list
-        newl = []  # initialising the new list
+    rawstring = ''.join(rawdata).replace('\n', '').replace('\r', '')
+    splitstring = rawstring.split(",")
+    ultrasonic = splitstring[:1]
+    gas = splitstring[1:]
 
-        for i in range(len(L)):
-            temp = L[i][2:]
-            newl.append(temp[:-5])
-        return newl
+    if ultrasonic == ['100'] or gas == ['1']:
+        dustbin = Dustbin.query.filter_by(users_id=id).first()
+        user = User.query.filter_by(id=dustbin.users_id).first()
+        msg = Message('Smart Waste Management', sender='intensenotes@gmail.com', recipients=[user.email])
+        msg.body = "Hello, Please remove the wastes in the waste-bin. "
+        mail.send(msg)
+        flash(f'Message sent!', 'success')
 
-    cleandata = clean(rawdata)
-
-    def write(L):
-        file = open("data.txt", mode='w')
-        for i in range(len(L)):
-            file.write(L[i] + '\n')
-        file.close()
-
-    write(cleandata)
-    return render_template('sensor-status.html', data=rawdata)
+    return render_template('sensor-status.html', ultrasonic=ultrasonic, gas=gas)
 
 
 @app.route('/sendEmail/<int:id>', methods=['GET'])
@@ -216,8 +212,8 @@ def dustbin_status():
 def send_email(id):
     dustbin = Dustbin.query.filter_by(users_id=id).first()
     user = User.query.filter_by(id=dustbin.users_id).first()
-    msg = Message('Hello', sender='intensenotes@gmail.com', recipients=[user.email])
-    msg.body = "Hello flask Mail Sevice"
+    msg = Message('Smart Waste Management', sender='intensenotes@gmail.com', recipients=[user.email])
+    msg.body = "Hello, Please remove the wastes in the waste-bin. "
     mail.send(msg)
     flash(f'Message sent!', 'success')
     return redirect(url_for('dustbin_list'))

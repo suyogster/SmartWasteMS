@@ -8,14 +8,18 @@
         <div class="row">
 
 
-
-
             <div class="col-lg-6 col-md-6">
                 <div class="card text-white bg-flat-color-2">
                     <div class="card-body">
                         <div class="card-left pt-1 float-left">
                             <h3 class="mb-0 fw-r">
-                                <span class="count">90</span>
+                                <span class="count">
+                                    {% for d in ultrasonic %}
+
+                                        <p>{{ d }}</p>
+
+                                    {% endfor %}
+                                </span>
                             </h3>
                             <p class="text-light mt-1 m-0">UltraSonic Sensors</p>
                         </div><!-- /.card-left -->
@@ -36,7 +40,13 @@
                     <div class="card-body">
                         <div class="card-left pt-1 float-left">
                             <h3 class="mb-0 fw-r">
-                                <span class="count">1</span>
+                                <span class="count">
+                                    {% for d in gas %}
+
+                                        <p>{{ d }}</p>
+
+                                    {% endfor %}
+                                </span>
                             </h3>
                             <p class="text-light mt-1 m-0">Gas Detection Sensors</p>
                         </div><!-- /.card-left -->
@@ -54,11 +64,6 @@
         </div>
         <!-- /.widget -->
 
-
-          {% for d in data %}
-            <p>{{ d }}</p>
-
-            {% endfor %}
 
         <div class="clearfix"></div>
 
