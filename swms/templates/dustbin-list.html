@@ -5,6 +5,10 @@
     <div class="animated fadeIn">
         <div class="row">
 
+        {% for ultra in ultrasonic%}
+            <p>UltraSonic</p>
+            <p>{{ ultra }}</p>
+        {% endfor %}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -30,7 +34,7 @@
                                     <td>{{ dustbin.users_id }}</td>
                                     <td><a href="{{ url_for('dustbin_status') }}" class="fa fa-2x fa-eye"></a>
                                     {% if current_user.role =='admin' %}
-                                        <a href="{{ url_for('send_email') }}" class="fa fa-2x fa-envelope"></a>
+                                        <a href="/sendEmail/{{ dustbin.users_id }}" class="fa fa-2x fa-envelope"></a>
 
                                     {% endif %}
                                     </td>

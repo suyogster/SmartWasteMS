@@ -2,7 +2,7 @@ import secrets
 import os
 from PIL import Image
 import sys
-import serial
+import serial, time
 
 from swms import app, db, bcrypt, mail
 from flask import render_template, url_for, flash, redirect, request, abort
@@ -169,49 +169,65 @@ def create_dusbtbin():
         return render_template('create-dustbin.html', title='Create Dustbin', form=form)
 
 
+# /dev/ttyACM0
+
 @app.route('/dustbinStatus', methods=['GET'])
 @login_required
 def dustbin_status():
-    # """Opening of the serial port"""
-    # try:
-    #     arduino = serial.Serial("COM6", timeout=1)
-    # except:
-    #     print('Please check the port')
-    #
-    # """Initialising variables"""
-    # rawdata = []
-    # count = 0
-    #
-    # """Receiving data and storing it in a list"""
-    # while count < 3:
-    #     rawdata.append(str(arduino.readline()))
-    #     count += 1
-    # print(rawdata)
-    #
-    # def clean(L):  # L is a list
-    #     newl = []  # initialising the new list
-    #     for i in range(len(L)):
-    #         temp = L[i][2:]
-    #         newl.append(temp[:-5])
-    #     return newl
-    #
-    # cleandata = clean(rawdata)
-    #
-    # def write(L):
-    #     file = open("data.txt", mode='w')
-    #     for i in range(len(L)):
-    #         file.write(L[i] + '\n')
-    #     file.close()
-    #
-    # write(cleandata)
-    return render_template('sensor-status.html')
+    """Opening of the serial port"""
+    try:
+        arduino = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
+        time.sleep(5)
+
+    except:
+        print('Please check the port')
+
+    """Initialising variables"""
+    rawdata = []
+    count = 0
+
+    """Receiving data and storing it in a list"""
+    while count <= 1:
+        rawdata.append(str(arduino.readline(), 'utf-8'))
+        count += 1
+
+    def clean(L):  # L is a list
+        newl = []  # initialising the new list
+
+        for i in range(len(L)):
+            temp = L[i][2:]
+            newl.append(temp[:-5])
+        return newl
+
+    cleandata = clean(rawdata)
+
+    def write(L):
+        file = open("data.txt", mode='w')
+        for i in range(len(L)):
+            file.write(L[i] + '\n')
+        file.close()
+
+    write(cleandata)
+    return render_template('sensor-status.html', data=rawdata)
 
 
-@app.route('/sendEmail', methods=['GET'])
+@app.route('/sendEmail/<int:id>', methods=['GET'])
 @login_required
-def send_email():
-    msg = Message('Hello', sender='intensenotes@gmail.com', recipients=['suyog.shrestha@deerwalk.edu.np'])
+def send_email(id):
+    dustbin = Dustbin.query.filter_by(users_id=id).first()
+    user = User.query.filter_by(id=dustbin.users_id).first()
+    msg = Message('Hello', sender='intensenotes@gmail.com', recipients=[user.email])
     msg.body = "Hello flask Mail Sevice"
     mail.send(msg)
     flash(f'Message sent!', 'success')
     return redirect(url_for('dustbin_list'))
+
+
+@app.route("/test", methods=['GET'])
+@login_required
+def test():
+    rough = ['1\r\n', '0\r\n']
+    ultrasonic = rough[:1]
+    gas = rough[1:]
+
+    return render_template('dustbin-list.html', ultrasonic=ultrasonic, gas=gas)

@@ -35,4 +35,4 @@ class Dustbin(db.Model):
     users_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location}','{self.user_id}')"
+        return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location}','{self.users_id}')"
