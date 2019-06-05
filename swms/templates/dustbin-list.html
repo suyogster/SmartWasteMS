@@ -35,7 +35,7 @@
                                     <td><a href="/dustbinStatus/{{ dustbin.users_id }}" class="fa fa-2x fa-eye"></a>
                                     {% if current_user.role =='admin' %}
                                         <a href="/sendEmail/{{ dustbin.users_id }}" class="fa fa-2x fa-envelope"></a>
-
+                                        <a href="/deleteDustbin/{{ dustbin.id }}" class="fa fa-2x fa-warning"></a>
                                     {% endif %}
                                     </td>
                                 </tr>

@@ -60,6 +60,8 @@ class UpdateAccountForm(FlaskForm):
 class CreateDustbinForm(FlaskForm):
     dustbinName = StringField('Dustbin Name', validators=[DataRequired(), Length(min=2, max=20)])
     description = TextAreaField('Description', validators=[DataRequired()])
-    location = StringField('Location', validators=[DataRequired()])
-    users_id = SelectField('Assigned To',choices=[], coerce=int)
+    location = SelectField('Location', validators=[DataRequired()],
+                           choices=[('27.7123771,85.3411937', 'Jaya Bageshwori Road, Kathmandu 44600'),
+                                    ('27.6981, 85.3592', 'Ring Rd, Kathmandu 44600')])
+    users_id = SelectField('Assigned To', choices=[], coerce=int)
     submit = SubmitField('Submit')

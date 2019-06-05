@@ -219,11 +219,15 @@ def send_email(id):
     return redirect(url_for('dustbin_list'))
 
 
-@app.route("/test", methods=['GET'])
+@app.route('/deleteDustbin/<int:id>', methods=['GET'])
 @login_required
-def test():
-    rough = ['1\r\n', '0\r\n']
-    ultrasonic = rough[:1]
-    gas = rough[1:]
-
-    return render_template('dustbin-list.html', ultrasonic=ultrasonic, gas=gas)
+def delete_dustbin(id):
+    if current_user.role == 'admin':
+        dustbin = Dustbin.query.filter_by(id=id).first()
+        db.session.delete(dustbin)
+        db.session.commit()
+        flash('The Dustbin has been deleted', 'success')
+        return redirect(url_for('dustbin_list'))
+    else:
+        flash('You have no right no access the page', 'danger')
+        return redirect(url_for('login'))
