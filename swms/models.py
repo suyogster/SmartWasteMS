@@ -36,3 +36,14 @@ class Dustbin(db.Model):
 
     def __repr__(self):
         return f"Dustbin('{self.dustbin_name}','{self.date_posted}','{self.description}','{self.location}','{self.users_id}')"
+
+
+# class Sensor(db.Model):
+#     __tablename__ = 'sensor'
+#     id = db.Column(db.Integer, primary_key=True)
+#     sensor_name = db.Column(db.String(20), nullable=False)
+#     date_obtained = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     value = db.Column(db.Float, nullable=False, default= 0.00)
+
+#     def __repr__(self):
+#         return f"Sensor('{self.sensor_name}','{self.date_obtained}', '{self.value}','{self_dustbin_id}')"

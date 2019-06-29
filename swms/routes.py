@@ -169,14 +169,12 @@ def create_dusbtbin():
         return render_template('create-dustbin.html', title='Create Dustbin', form=form)
 
 
-# /dev/ttyACM0
-
 @app.route('/dustbinStatus/<int:id>', methods=['GET'])
 @login_required
 def dustbin_status(id):
     """Opening of the serial port"""
     try:
-        arduino = serial.Serial("COM6", 9600, timeout=1)
+        arduino = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
         time.sleep(5)
 
     except:
@@ -196,13 +194,21 @@ def dustbin_status(id):
     ultrasonic = splitstring[:1]
     gas = splitstring[1:]
 
-    if ultrasonic == ['100'] or gas == ['1']:
-        dustbin = Dustbin.query.filter_by(users_id=id).first()
-        user = User.query.filter_by(id=dustbin.users_id).first()
-        msg = Message('Smart Waste Management', sender='intensenotes@gmail.com', recipients=[user.email])
-        msg.body = "Hello, Please remove the wastes in the waste-bin. "
-        mail.send(msg)
-        flash(f'Message sent!', 'success')
+    for u in ultrasonic:
+        mailUltrasonic = u
+
+    for g in gas:
+        mailGas = g
+
+    if current_user.role == 'admin':
+        if ultrasonic == ['100'] or gas == ['1']:
+            dustbin = Dustbin.query.filter_by(users_id=id).first()
+            user = User.query.filter_by(id=dustbin.users_id).first()
+            msg = Message('Smart Waste Management System: Worked Assigned Alert', sender='intensenotes@gmail.com',
+                          recipients=[user.email])
+            msg.body = "Hello User, The SmartBin allocated to you is ready to be picked at " + dustbin.location + "\n\n Content Status: " + mailUltrasonic + "\n Gas Detected: " + mailGas
+            mail.send(msg)
+            flash(f'Message sent!', 'success')
 
     return render_template('sensor-status.html', ultrasonic=ultrasonic, gas=gas)
 
