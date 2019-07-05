@@ -11,6 +11,9 @@ from flask_mail import Message
 from .forms import RegistrationForm, LoginForm, UpdateAccountForm, CreateDustbinForm
 from swms.models import User, Dustbin
 
+import urllib
+from bs4 import BeautifulSoup
+
 
 @app.route('/')
 @app.route('/dashboard')
@@ -172,6 +175,7 @@ def create_dusbtbin():
 @app.route('/dustbinStatus/<int:id>', methods=['GET'])
 @login_required
 def dustbin_status(id):
+
     """Opening of the serial port"""
     try:
         arduino = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
@@ -196,9 +200,14 @@ def dustbin_status(id):
 
     for u in ultrasonic:
         mailUltrasonic = u
+      
 
     for g in gas:
         mailGas = g
+        print(mailGas)
+
+    thingsSpeak_data = urllib.request.urlopen("https://api.thingspeak.com/update?api_key=IJH371WJPD2FXEFS&field1="+ str(mailUltrasonic) + "&field2=" + str(mailGas))
+
 
     if current_user.role == 'admin':
         if ultrasonic == ['100'] or gas == ['1']:
